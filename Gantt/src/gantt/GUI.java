@@ -199,6 +199,8 @@ public class GUI implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btIniciar) {
             bloquear = false;
+            organizarCola();
+            clientes = clientes2;
             //Mientras que haya clientes y el tiempo sea menor a 30
             while (clientes.longitud() != 0 || tiempo <= 30) {
                 try {
@@ -325,8 +327,8 @@ public class GUI implements ActionListener {
             for (int j = 0; j < colaOrg.size() - 1; j++) {
                 if (colaOrg.get(j).rafaga > colaOrg.get(j + 1).rafaga) {
                     Node temp = colaOrg.get(j);
-                    /*colaOrg.get(j) = colaOrg.get(j+1);
-                    colaOrg.get(j+1) = temp;*/
+                    colaOrg.set(j, colaOrg.get(j+1));
+                    colaOrg.set(j+1, temp);
                 }
             }
         }
