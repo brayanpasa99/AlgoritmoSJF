@@ -188,7 +188,7 @@ public class GUI implements ActionListener {
         return Panel;
     }
 
-    //Se crea una cola de clientes
+    //Se crea una cola de clientes y una cola auxiliar para organizarlos según la ráfaga
     Cola clientes = new Cola();
     Cola clientes2 = new Cola();
     //Se inicializa el tiempo en cero
@@ -201,6 +201,7 @@ public class GUI implements ActionListener {
             bloquear = false;
             organizarCola();
             clientes = clientes2;
+            clientes2 = new Cola();
             //Mientras que haya clientes y el tiempo sea menor a 30
             while (clientes.longitud() != 0 || tiempo <= 30) {
                 try {
