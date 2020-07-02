@@ -341,6 +341,8 @@ public class GUI implements ActionListener {
     }
 
     public void bloquearProceso() {
+        
+        
 
     }
 
