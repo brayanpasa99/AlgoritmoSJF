@@ -15,13 +15,14 @@ import java.util.ArrayList;
 public class Cola {
 
     protected Node Cabecera;
+    protected Node Final;
     
     public Cola() {
         Cabecera = null;
     }
 
-    public void insert(int llegada, int rafaga, String nom) {
-        Node tmp = new Node(llegada, rafaga, nom);
+    public void insert(int llegada, int rafaga, String nom, int fil, int rRestante) {
+        Node tmp = new Node(llegada, rafaga, nom, fil, rRestante);
         int l = longitud();
         if (l > 0) {
         Node aux1 = Cabecera;
@@ -34,6 +35,7 @@ public class Cola {
         else {
             Cabecera = tmp;
         }
+        
     
     }
 
@@ -87,4 +89,5 @@ public class Cola {
             return false;
         }
     }
+
 }
