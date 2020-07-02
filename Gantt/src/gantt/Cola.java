@@ -66,19 +66,18 @@ public class Cola {
         return cont;
     }
 
-    public String imprimir() {
-        String clientes = "";
+    public ArrayList<Node> nodosCola() {
+        ArrayList<Node> rafagas = new ArrayList<Node>();
         
         if (!isEmpty()) {
             Node tmp = Cabecera;
             while (tmp != null) {
-                
-                
-                tmp = tmp.getNext();
+                rafagas.add(tmp);
+                tmp = tmp.getNext();         
             }
         }
         
-        return clientes;
+        return rafagas;
     }
 
     public boolean isEmpty() {
