@@ -6,14 +6,11 @@
 package gantt;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -24,7 +21,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -41,16 +37,16 @@ public class GUI implements ActionListener {
     int personaActual;
     int fila = 0;
     boolean clienteInicial = true;
-    
+
     //Se crea una cola de clientes
     Cola clientes = new Cola();
     Cola clientes2 = new Cola();
     Cola clientesBloqueados = new Cola();
-    
+
     //Se inicializa el tiempo en cero
     int tiempo = 0;
     Random aleatorio = new Random(System.currentTimeMillis());
-    
+
     //Se generan los objetos de las tablas de info. y gantt para el cliente actual
     Object[] dataAuxInfo = new Object[7];
     Object[] dataGantt = new Object[30];
@@ -179,14 +175,14 @@ public class GUI implements ActionListener {
         btBloquear.addActionListener(this);
         Panel.add(btBloquear);
         Panel.setBackground(new java.awt.Color(198, 198, 198));
-        
+
         btDesbloquear = new JButton("Desbloquear proceso");
         btDesbloquear.setBounds(740, 15, 200, 45);
         btDesbloquear.setVisible(true);
         btDesbloquear.addActionListener(this);
         Panel.add(btDesbloquear);
         Panel.setBackground(new java.awt.Color(198, 198, 198));
-        
+
         lbTiempo = new JLabel("Tiempo: " + String.valueOf(tiempo), SwingConstants.CENTER);
         lbTiempo.setBounds(960, 15, 200, 45);
         lbTiempo.setVisible(true);
@@ -216,14 +212,14 @@ public class GUI implements ActionListener {
 
         return Panel;
     }
-    
-    public JPanel ColaBloqueos(){
+
+    public JPanel ColaBloqueos() {
         JPanel Panel = new JPanel();
         Panel.setLayout(null);
-        Panel.setBounds(0, 690, 1280, 120);
+        Panel.setBounds(0, 600, 1280, 120);
         Panel.setFont(new java.awt.Font("Cambria", 2, 11));
         Panel.setBackground(new java.awt.Color(0, 142, 142));
-        
+
         modelTbBloqueados = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -239,7 +235,7 @@ public class GUI implements ActionListener {
         modelTbBloqueados.addColumn("T. Comienzo");
         modelTbBloqueados.addColumn("T. Bloqueo");
         modelTbBloqueados.addColumn("Rafaga restante");
-        
+
         modelTbBloqueados.addRow(new Object[]{"Proceso", "T. Llegada", "Rafaga", "T. Comienzo", "T. Bloqueo", "Rafaga restante"});
 
         tbBloqueados.getTableHeader().setReorderingAllowed(false);
@@ -250,10 +246,10 @@ public class GUI implements ActionListener {
         tbBloqueados.setFillsViewportHeight(true);
 
         Panel.add(tbBloqueados);
-        
+
         return Panel;
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -266,6 +262,10 @@ public class GUI implements ActionListener {
             } else {
 
                 //Se setea la persona actual como la cabeza de la cola
+                //Creo que se tiene que setear la persona actual después de organizar
+                organizarCola();
+                clientes = clientes2;
+                clientes2 = new Cola();
                 Node personaActual = clientes.Cabecera;
 
                 if (clienteInicial == true) {
@@ -274,10 +274,10 @@ public class GUI implements ActionListener {
                     dataGantt = new Object[30];
 
                     //Se organiza la cola
-                    organizarCola();
+                    //Generaba errores al mover la seteada dentro del if, voy a sacar toda la instrucción
+                    /*organizarCola();
                     clientes = clientes2;
-                    clientes2 = new Cola();
-
+                    clientes2 = new Cola();*/
                     //Se genera una nueva semilla aleatoria
                     aleatorio.setSeed(System.currentTimeMillis());
 
@@ -391,7 +391,7 @@ public class GUI implements ActionListener {
             System.out.println("Llego un nuevo cliente");
 
             //Se le asigna una rafaga y un nombre aleatorio
-            int nuevoClientRagafa = aleatorio.nextInt(4) + 2;
+            int nuevoClientRagafa = aleatorio.nextInt(5) + 3;
             int nuevoClientNombre = aleatorio.nextInt(9);
 
             //Se muestra la informacion del nuevo cliente
@@ -410,34 +410,40 @@ public class GUI implements ActionListener {
             } else {
 
                 clientesBloqueados.insert(clientes.Cabecera.llegada, clientes.Cabecera.rafaga, clientes.Cabecera.nombre, clientes.Cabecera.fila, clientes.Cabecera.comienzo + clientes.Cabecera.rafaga - tiempo);
-                JOptionPane.showMessageDialog(null, "El proceso: " + clientesBloqueados.Cabecera.nombre + " Sera bloqueado... UwU");
-                
+                JOptionPane.showMessageDialog(null, "El proceso: " + clientesBloqueados.Cabecera.nombre + " será bloqueado");
+
                 Node aux = clientesBloqueados.Cabecera;
-                
-                while(aux.fila != clientes.Cabecera.fila){
+
+                while (aux.fila != clientes.Cabecera.fila) {
                     aux = aux.next;
                 }
-                
+
                 aux.comienzo = clientes.Cabecera.comienzo;
-                
+
                 clientes.extraer(1);
-                fila ++;
+                fila++;
                 clienteInicial = true;
 
                 dataBloqueados[0] = aux.nombre;
                 dataBloqueados[1] = aux.llegada;
                 dataBloqueados[2] = aux.rafaga;
                 dataBloqueados[3] = aux.comienzo;
-                
+
                 //Bloqueo y restante
                 dataBloqueados[4] = tiempo;
                 //aux.rafagaRestante = aux.comienzo + aux.rafaga - tiempo;
                 dataBloqueados[5] = aux.rafagaRestante;
-                
+
                 modelTbBloqueados.addRow(dataBloqueados);
-                
+
             }
+        } else if (e.getSource() == btDesbloquear) {
+            
+            clientes.insert(clientesBloqueados.Cabecera.llegada, clientesBloqueados.Cabecera.rafagaRestante, clientesBloqueados.Cabecera.nombre + " - (D)", fila, 0);
+            clientesBloqueados.extraer(1);
+            
         }
+
     }
 
     public void organizarCola() {
@@ -448,8 +454,8 @@ public class GUI implements ActionListener {
             for (int j = 0; j < colaOrg.size() - 1; j++) {
                 if (colaOrg.get(j).rafaga > colaOrg.get(j + 1).rafaga) {
                     Node temp = colaOrg.get(j);
-                    colaOrg.set(j, colaOrg.get(j+1));
-                    colaOrg.set(j+1, temp);
+                    colaOrg.set(j, colaOrg.get(j + 1));
+                    colaOrg.set(j + 1, temp);
                 }
             }
         }
@@ -459,7 +465,5 @@ public class GUI implements ActionListener {
         }
 
     }
-
-    
 
 }
