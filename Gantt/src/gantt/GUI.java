@@ -391,7 +391,7 @@ public class GUI implements ActionListener {
             System.out.println("Llego un nuevo cliente");
 
             //Se le asigna una rafaga y un nombre aleatorio
-            int nuevoClientRagafa = aleatorio.nextInt(5) + 3;
+            int nuevoClientRagafa = aleatorio.nextInt(4) + 2;
             int nuevoClientNombre = aleatorio.nextInt(9);
 
             //Se muestra la informacion del nuevo cliente
@@ -438,10 +438,15 @@ public class GUI implements ActionListener {
 
             }
         } else if (e.getSource() == btDesbloquear) {
-            
-            clientes.insert(clientesBloqueados.Cabecera.llegada, clientesBloqueados.Cabecera.rafagaRestante, clientesBloqueados.Cabecera.nombre + " - (D)", fila, 0);
-            clientesBloqueados.extraer(1);
-            
+
+            if (clientesBloqueados.longitud() == 0) {
+                JOptionPane.showMessageDialog(null, "No hay procesos bloqueados");
+            } else {
+                clientesBloqueados.Cabecera.llegada = tiempo;
+                clientes.insert(clientesBloqueados.Cabecera.llegada, clientesBloqueados.Cabecera.rafagaRestante, clientesBloqueados.Cabecera.nombre + " - (D)", fila, 0);
+                clientesBloqueados.extraer(1);
+            }
+
         }
 
     }
